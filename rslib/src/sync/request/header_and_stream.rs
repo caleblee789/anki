@@ -145,7 +145,10 @@ impl Header for SyncHeader {
             .ok_or_else(axum_extra::headers::Error::invalid)
     }
 
-    fn encode<E: Extend<HeaderValue>>(&self, _values: &mut E) {
-        todo!()
+    fn encode<E: Extend<HeaderValue>>(&self, values: &mut E) {
+        values.extend(std::iter::once(
+            HeaderValue::from_str(&serde_json::to_string(self).expect("serialize sync header"))
+                .expect("valid sync header"),
+        ));
     }
 }
